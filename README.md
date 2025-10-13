@@ -2,6 +2,7 @@
 Network inventory and orchestration system
 
 ## Overview
+Blacksmith is an application which 
 
 ## Setup instructions
     python -m pip install --upgrade pip flask netmiko tinydb
@@ -11,3 +12,5 @@ Network inventory and orchestration system
     [ ] Add basic frontend
     [ ] Add feature - device inventory
     [ ] Add feature - IPAM
+    [ ] Add feature - opening a device in external systems (SSH, web, monitoring system, etc)
+    [ ] Add driver - Cisco IOS
