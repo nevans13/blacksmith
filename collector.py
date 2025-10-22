@@ -4,6 +4,4 @@
 
 from tinydb import TinyDB, Query
 
-if __name__ == "__main__":
-    # Create or import the database
-    db = TinyDB("db.json")
+#if __name__ == "__main__":
