@@ -9,7 +9,8 @@ Blacksmith is an application which
     flask run --host=0.0.0.0
 
 ## To Do
-    [ ] Add basic frontend
+    [x] Add basic frontend
+    [ ] Add authentication layer
     [ ] Add feature - device inventory
     [ ] Add feature - IPAM
     [ ] Add feature - routing protocols

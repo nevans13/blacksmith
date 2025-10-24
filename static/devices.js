@@ -1,4 +1,4 @@
-// Javascript for 
+// Javascript for index.html frontend
 // v1.0.0 - 10/15/2025
 // nevans13
 
@@ -12,8 +12,21 @@ async function getDevices() {
     }
 
     const result = await response.json();
-    console.log(result);
+    return result;
   } catch (error) {
     console.error(error.message);
   }
 }
+
+// Add devices to the device table
+getDevices().then((value) => {
+  value.forEach(element => {
+    console.log(element);
+    let devicesHostname = document.createElement("td").appendChild(document.createTextNode(element.hostname.toString().trim()));
+    let devicesGroup = document.createElement("td").appendChild(document.createTextNode("element.deviceGroup.toString().trim()"));
+    let devicesTableRow = document.createElement("tr");
+    devicesTableRow.appendChild(devicesHostname);
+    devicesTableRow.appendChild(devicesGroup);
+    document.getElementById("device-table").appendChild(devicesTableRow);
+  });
+});
