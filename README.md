@@ -2,7 +2,7 @@
 Network inventory and orchestration system
 
 ## Overview
-Blacksmith is an application which 
+Blacksmith is a management system for 
 
 ## Setup instructions
     python -m pip install --upgrade pip flask netmiko tinydb

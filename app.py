@@ -29,14 +29,15 @@ def listDevices():
     return deviceDB.all()
 
 # Route to get a single device
-#@app.route("/api/v1/device/<str:deviceID>", methods=["GET"])
+#@app.route("/api/v1/devices/<str:deviceID>", methods=["GET"])
 #def getDevice():
 
 # Route to create a single device
-@app.route("/api/v1/device", methods=["POST"])
+@app.route("/api/v1/devices", methods=["POST"])
 def createDevice():
     try:
-        deviceDB.insert({"id": str(uuid4()), "hostname": vdt(request.args.get("hostname", type=str), "hostname")})
+        if not vdt(request.args.get("hostname", type=str), "hostname"): raise ValueError("Hostname is not valid")
+        deviceDB.insert({"id": str(uuid4()), "hostname": request.args.get("hostname", type=str)})
         return "CREATED", 201
     except: 
         return "ERROR", 500

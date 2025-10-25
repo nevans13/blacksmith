@@ -17,12 +17,15 @@
         </div>
         <div class="content">
             <h2>Devices</h2>
-            <table id="device-table">
+            <table id="deviceTable">
                 <tr>
                     <th>Hostname</th>
                     <th>Group</th>
                 </tr>
             </table>
+            <button id="createNewDeviceButton" onclick="createNewDevice()">Create New</button>
+            <button hidden id="saveNewDeviceButton" onclick="saveNewDevice()">Save</button>
+            <button hidden id="cancelNewDeviceButton" onclick="cancelNewDevice()">Cancel</button>
         </div>
     </body>
 </html>
