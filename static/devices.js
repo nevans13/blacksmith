@@ -113,16 +113,32 @@ getDevices().then((value) => {
     document.getElementById("deviceTable").setAttribute("hidden", "");
   }
 
+  // Build the table row
   value.forEach(element => {
     let devicesHostname = document.createTextNode(element.hostname.toString().trim());
+    let devicesHostnameLink = document.createElement("a");
     let devicesHostnameRow = document.createElement("td");
     let devicesGroup = document.createTextNode("element.deviceGroup.toString().trim()");
     let devicesGroupRow = document.createElement("td");
     let devicesTableRow = document.createElement("tr");
     devicesTableRow.appendChild(devicesHostnameRow);
-    devicesHostnameRow.appendChild(devicesHostname);
+    devicesHostnameRow.appendChild(devicesHostnameLink);
+    devicesHostnameLink.appendChild(devicesHostname);
     devicesTableRow.appendChild(devicesGroupRow);
     devicesGroupRow.appendChild(devicesGroup);
+    
+    // Create the link to manage the individual device
+    devicesHostnameLink.setAttribute("href", "#")
+    devicesHostnameLink.addEventListener("click", (event) => {
+      // Add content to the device detail table
+      console.log(event.target.text);
+
+      // Update the page after hydrating the device detail table
+      document.getElementById("deviceTableDiv").setAttribute("hidden", "");
+      document.getElementById("deviceDetailDiv").removeAttribute("hidden");
+    });
+
+    // Add the table row to the table
     document.getElementById("deviceTable").appendChild(devicesTableRow);
   });
 });

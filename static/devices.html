@@ -15,7 +15,8 @@
             <a class="header" href="help.html">Help</a>
             <hr class="header" />
         </div>
-        <div class="content">
+
+        <div class="content" id="deviceTableDiv">
             <h2>Devices</h2>
             <table id="deviceTable">
                 <tr>
@@ -26,6 +27,24 @@
             <button id="createNewDeviceButton" onclick="createNewDevice()">Create New</button>
             <button hidden id="saveNewDeviceButton" onclick="saveNewDevice()">Save</button>
             <button hidden id="cancelNewDeviceButton" onclick="cancelNewDevice()">Cancel</button>
+        </div>
+
+        <div class="content" id="deviceDetailDiv" hidden>
+            <h2 id="deviceDetailHeader"></h2>
+            <table id="deviceDetailTable">
+                <tr>
+                    <td>Hostname</td>
+                    <td id="deviceDetailHostname"></td>
+                </tr>
+                <tr>
+                    <td>Group</td>
+                    <td id="deviceDetailGroup"></td>
+                </tr>
+                <tr>
+                    <td>Primary IP</td>
+                    <td id="deviceDetailPrimaryIP"></td>
+                </tr>
+            </table>
         </div>
     </body>
 </html>
