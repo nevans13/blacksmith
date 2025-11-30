@@ -29,8 +29,10 @@ def listDevices():
     return deviceDB.all()
 
 # Route to get a single device
-#@app.route("/api/v1/devices/<str:deviceID>", methods=["GET"])
-#def getDevice():
+@app.route("/api/v1/devices/<string:deviceId>", methods=["GET"])
+def getDevice(deviceId):
+    deviceQuery = Query()
+    return deviceDB.search(deviceQuery.id == deviceId)
 
 # Route to create a single device
 @app.route("/api/v1/devices", methods=["POST"])

@@ -33,6 +33,7 @@
             <h2 id="deviceDetailHeader"></h2>
             <table id="deviceDetailTable">
                 <tr>
+                    <!-- The hostname column holds the unique device ID in the "id" tag of each entry -->
                     <td>Hostname</td>
                     <td id="deviceDetailHostname"></td>
                 </tr>
@@ -45,6 +46,9 @@
                     <td id="deviceDetailPrimaryIP"></td>
                 </tr>
             </table>
+            <button id="editDeviceButton" onclick="editDevice()">Edit Device</button>
+            <button hidden id="saveEditDeviceButton" onclick="saveEditDevice()">Save</button>
+            <button hidden id="cancelEditDeviceButton" onclick="cancelEditDevice()">Cancel</button>
         </div>
     </body>
 </html>

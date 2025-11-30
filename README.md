@@ -2,7 +2,7 @@
 Network inventory and orchestration system
 
 ## Overview
-Blacksmith is a management system for 
+Blacksmith is an inventory-centric management system for network devices. Individual devices are treated as first-class objects, allowing for flexibility with network management.
 
 ## Setup instructions
     python -m pip install --upgrade pip flask netmiko tinydb
@@ -10,6 +10,7 @@ Blacksmith is a management system for
 
 ## To Do
     [x] Add basic frontend
+    [ ] Add device tagging functionality (instead of single-membership such as device group)
     [ ] Add authentication layer
     [ ] Add dark mode
     [ ] Add feature - device inventory

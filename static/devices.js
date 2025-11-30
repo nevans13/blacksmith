@@ -35,6 +35,22 @@ async function getDevices() {
   }
 }
 
+// Get a single device
+async function getDevice(deviceId) {
+  const url = origin + "/api/v1/devices/" + deviceId.toString().trim();
+  try {
+    const response = await fetch(url, {method: "GET"});
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
 // Create a new device
 async function createDevice(hostname="") {
   var url = origin + "/api/v1/devices";
@@ -106,6 +122,28 @@ function cancelNewDevice() {
   document.getElementById("newDeviceRow").remove();
 }
 
+// Edit an existing device by editing the parameters in the device detail table
+function editDevice() {
+  // Update buttons
+  document.getElementById("editDeviceButton").setAttribute("hidden", "");
+  document.getElementById("saveEditDeviceButton").removeAttribute("hidden");
+  document.getElementById("cancelEditDeviceButton").removeAttribute("hidden");
+
+  // Convert the device parameters from text to a pre-filled textbox
+  
+}
+
+// Cancel editing an existing device
+function cancelEditDevice() {
+  // Update buttons
+  document.getElementById("saveEditDeviceButton").setAttribute("hidden", "");
+  document.getElementById("cancelEditDeviceButton").setAttribute("hidden", "");
+  document.getElementById("editDeviceButton").removeAttribute("hidden");
+
+  // Delete input row
+  document.getElementById("newDeviceRow").remove();
+}
+
 // Add devices to the device table
 getDevices().then((value) => {
   // Hide the device table if there are no devices
@@ -128,10 +166,16 @@ getDevices().then((value) => {
     devicesGroupRow.appendChild(devicesGroup);
     
     // Create the link to manage the individual device
-    devicesHostnameLink.setAttribute("href", "#")
+    // The device hostname link also has the unique ID of the device in the database
+    devicesHostnameLink.setAttribute("id", element.id.toString().trim());
+    devicesHostnameLink.setAttribute("href", "#");
     devicesHostnameLink.addEventListener("click", (event) => {
-      // Add content to the device detail table
-      console.log(event.target.text);
+      
+      // Get the device details
+      getDevice(event.target.id.toString().trim()).then((deviceValue) => {
+        // Add content to the device detail table
+        document.getElementById("deviceDetailHostname").innerText = deviceValue[0].hostname.toString().trim();
+      });
 
       // Update the page after hydrating the device detail table
       document.getElementById("deviceTableDiv").setAttribute("hidden", "");
