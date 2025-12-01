@@ -21,7 +21,7 @@
             <table id="deviceTable">
                 <tr>
                     <th>Hostname</th>
-                    <th>Group</th>
+                    <th>Tags</th>
                 </tr>
             </table>
             <button id="createNewDeviceButton" onclick="createNewDevice()">Create New</button>
@@ -34,15 +34,15 @@
             <table id="deviceDetailTable">
                 <tr>
                     <!-- The hostname column holds the unique device ID in the "id" tag of each entry -->
-                    <td>Hostname</td>
+                    <td><b>Hostname</b></td>
                     <td id="deviceDetailHostname"></td>
                 </tr>
                 <tr>
-                    <td>Group</td>
-                    <td id="deviceDetailGroup"></td>
+                    <td><b>Tags</b></td>
+                    <td id="deviceDetailTags"></td>
                 </tr>
                 <tr>
-                    <td>Primary IP</td>
+                    <td><b>Primary IP</b></td>
                     <td id="deviceDetailPrimaryIP"></td>
                 </tr>
             </table>

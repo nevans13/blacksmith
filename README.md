@@ -11,6 +11,7 @@ Blacksmith is an inventory-centric management system for network devices. Indivi
 ## To Do
     [x] Add basic frontend
     [ ] Add device tagging functionality (instead of single-membership such as device group)
+    [ ] Add help page (wiki-style)
     [ ] Add authentication layer
     [ ] Add dark mode
     [ ] Add feature - device inventory

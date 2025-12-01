@@ -11,6 +11,17 @@ def vdt(input, inputType):
                 if len(input) < 1: raise ValueError("Hostname is too short")
                 if len(input) >= 100: raise ValueError("Hostname is too long")
                 return True
+            
+            # Tags are included as a query parameter string, seperated by an asterisk
+            case "tags":
+                if type(input) != str: raise ValueError("Tag is invalid type")
+                if len(input) < 1: raise ValueError("Tag is too short")
+                if len(input) >= 200: raise ValueError("Tag is too long")
+                if " " in input: raise ValueError("Tag contains whitespace - space")
+                if "\"" in input: raise ValueError("Tag contains invalid character - \"")
+                if "'" in input: raise ValueError("Tag contains invalid character - '")
+                return True
+            
             case _:
                 raise ValueError("Unknown input type " + str(inputType))
                 

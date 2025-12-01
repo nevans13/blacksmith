@@ -26,20 +26,49 @@ def favicon(): return send_from_directory(os.path.join(app.root_path, "static"),
 # Route for device list
 @app.route("/api/v1/devices", methods=["GET"])
 def listDevices():
-    return deviceDB.all()
+    try:
+        return deviceDB.all(), 200
+    except:
+        return "ERROR", 500
 
 # Route to get a single device
 @app.route("/api/v1/devices/<string:deviceId>", methods=["GET"])
 def getDevice(deviceId):
-    deviceQuery = Query()
-    return deviceDB.search(deviceQuery.id == deviceId)
+    try:
+        deviceQuery = Query()
+        return deviceDB.search(deviceQuery.id == deviceId), 200
+    except:
+        return "ERROR", 500
 
 # Route to create a single device
 @app.route("/api/v1/devices", methods=["POST"])
 def createDevice():
     try:
         if not vdt(request.args.get("hostname", type=str), "hostname"): raise ValueError("Hostname is not valid")
-        deviceDB.insert({"id": str(uuid4()), "hostname": request.args.get("hostname", type=str)})
+        if not vdt(request.args.get("tags", type=str), "tags"): raise ValueError("Tags are not valid")
+        deviceDB.insert({"id": str(uuid4()), "hostname": request.args.get("hostname", type=str), "tags": request.args.get("tags", type=str).split("*")})
         return "CREATED", 201
     except: 
+        return "ERROR", 500
+
+# Route to get tags in use by blacksmith
+@app.route("/api/v1/tags", methods=["GET"])
+def getTags():
+    try:
+        allTags = set()
+
+        # Get device tags
+        for device in deviceDB.all():
+            # Skip device if no tags
+            if "tags" not in device.keys(): continue
+
+            # Handle if the tags field is either a single value or a list/set of values
+            if type(device["tags"]) == str: allTags.add(device["tags"])
+            elif type(device["tags"]) == list or type(device["tags"]) == set:
+                for tag in device["tags"]: allTags.add(tag)
+            else: return "ERROR: tags on device are of invalid type", 500
+        
+        return list(allTags), 200
+
+    except:
         return "ERROR", 500

@@ -52,11 +52,12 @@ async function getDevice(deviceId) {
 }
 
 // Create a new device
-async function createDevice(hostname="") {
+async function createDevice(hostname="", tags="") {
+  // Create URL and add query parameters
   var url = origin + "/api/v1/devices";
-  if (hostname !== "") {
-    url = addQueryParameter(url, "hostname", hostname);
-  }
+  url = addQueryParameter(url, "hostname", hostname);
+  url = addQueryParameter(url, "tags", tags);
+
   try {
     const response = await fetch(url, {method: "POST"});
     if (!response.ok) {
@@ -64,6 +65,22 @@ async function createDevice(hostname="") {
     }
 
     return;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+// Get tags in use by blacksmith
+async function getTags() {
+  var url = origin + "/api/v1/tags";
+  try {
+    const response = await fetch(url, {method: "GET"});
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
   } catch (error) {
     console.error(error.message);
   }
@@ -80,24 +97,60 @@ function createNewDevice() {
   document.getElementById("cancelNewDeviceButton").removeAttribute("hidden");
 
   // Create new row with textboxes for device details
+  // Create elements for device hostname
   let devicesHostname = document.createElement("input");
   devicesHostname.setAttribute("id", "newDeviceHostname");
-  let devicesHostnameRow = document.createElement("td");
-  let devicesGroup = document.createElement("input");
-  devicesGroup.setAttribute("id", "newDeviceGroup");
-  let devicesGroupRow = document.createElement("td");
+  let devicesHostnameColumn = document.createElement("td");
+  
+  // Create elements for device tags
+  let devicesTags = document.createElement("select");
+  devicesTags.setAttribute("id", "newDeviceTags");
+  devicesTags.setAttribute("name", "newDeviceTags");
+  devicesTags.setAttribute("multiple", "");
+  getTags().then((tags) => {
+    tags.forEach(element => {
+      let devicesTagOption = document.createElement("option");
+      devicesTagOption.setAttribute("value", element.toString().trim());
+      devicesTagOption.innerText = element.toString().trim();
+      document.getElementById("newDeviceTags").appendChild(devicesTagOption);
+    });
+  });
+  
+  let devicesTagsColumn = document.createElement("td");
+  
+  // Add the elements to the table row, starting with the parent element and moving to each child
   let devicesTableRow = document.createElement("tr");
   devicesTableRow.setAttribute("id", "newDeviceRow");
-  devicesTableRow.appendChild(devicesHostnameRow);
-  devicesHostnameRow.appendChild(devicesHostname);
-  devicesTableRow.appendChild(devicesGroupRow);
-  devicesGroupRow.appendChild(devicesGroup);
+  devicesTableRow.appendChild(devicesHostnameColumn);
+  devicesHostnameColumn.appendChild(devicesHostname);
+  devicesTableRow.appendChild(devicesTagsColumn);
+  devicesTagsColumn.appendChild(devicesTags);
   document.getElementById("deviceTable").appendChild(devicesTableRow);
 }
 
 // Save the new device
 function saveNewDevice() {
-  createDevice(document.getElementById("newDeviceHostname").value).then(() => {
+  // Define parameters for the device
+  let hostname = document.getElementById("newDeviceHostname").value;
+
+  // Tags are included as a query parameter string, seperated by an asterisk
+  let tags = "";
+
+  // Check if there are any tags defined before proceeding
+  if (document.getElementById("newDeviceTags").children.length >= 1) {
+    Array.from(document.getElementById("newDeviceTags").children).forEach(option => {
+      // Append the tag to the array if the option was selected in the multiselect
+      if (option.selected) {
+        // Add an asterisk before appending if the string has entries
+        if (tags.length >= 2) {tags += "*"}
+        tags += option.value.toString().trim();
+      }
+    });
+  } else {
+    tags = "default";
+  }
+
+  createDevice(hostname, tags).then(() => {
     // Update buttons
     document.getElementById("saveNewDeviceButton").setAttribute("hidden", "");
     document.getElementById("cancelNewDeviceButton").setAttribute("hidden", "");
@@ -155,15 +208,15 @@ getDevices().then((value) => {
   value.forEach(element => {
     let devicesHostname = document.createTextNode(element.hostname.toString().trim());
     let devicesHostnameLink = document.createElement("a");
-    let devicesHostnameRow = document.createElement("td");
-    let devicesGroup = document.createTextNode("element.deviceGroup.toString().trim()");
-    let devicesGroupRow = document.createElement("td");
+    let devicesHostnameColumn = document.createElement("td");
+    let devicesTags = document.createTextNode(element.tags.toString().trim());
+    let devicesTagsColumn = document.createElement("td");
     let devicesTableRow = document.createElement("tr");
-    devicesTableRow.appendChild(devicesHostnameRow);
-    devicesHostnameRow.appendChild(devicesHostnameLink);
+    devicesTableRow.appendChild(devicesHostnameColumn);
+    devicesHostnameColumn.appendChild(devicesHostnameLink);
     devicesHostnameLink.appendChild(devicesHostname);
-    devicesTableRow.appendChild(devicesGroupRow);
-    devicesGroupRow.appendChild(devicesGroup);
+    devicesTableRow.appendChild(devicesTagsColumn);
+    devicesTagsColumn.appendChild(devicesTags);
     
     // Create the link to manage the individual device
     // The device hostname link also has the unique ID of the device in the database
