@@ -209,7 +209,7 @@ getDevices().then((value) => {
     let devicesHostname = document.createTextNode(element.hostname.toString().trim());
     let devicesHostnameLink = document.createElement("a");
     let devicesHostnameColumn = document.createElement("td");
-    let devicesTags = document.createTextNode(element.tags.toString().trim());
+    let devicesTags = document.createTextNode(element.tags.join(", ").toString().trim());
     let devicesTagsColumn = document.createElement("td");
     let devicesTableRow = document.createElement("tr");
     devicesTableRow.appendChild(devicesHostnameColumn);
@@ -228,6 +228,7 @@ getDevices().then((value) => {
       getDevice(event.target.id.toString().trim()).then((deviceValue) => {
         // Add content to the device detail table
         document.getElementById("deviceDetailHostname").innerText = deviceValue[0].hostname.toString().trim();
+        document.getElementById("deviceDetailTags").innerText = deviceValue[0].tags.join(", ").toString().trim();
       });
 
       // Update the page after hydrating the device detail table
