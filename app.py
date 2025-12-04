@@ -2,7 +2,8 @@
 # v1.0.0 - 10/12/2025
 # nevans13
 
-import os
+import os, threading, time
+from collector import isOnline
 from flask import Flask, redirect, request, send_from_directory, url_for
 from tinydb import TinyDB, Query
 from uuid import uuid4
@@ -14,6 +15,9 @@ deviceDB = TinyDB("deviceDB.json")
 
 # Create Flask app
 app = Flask(__name__)
+
+# Create a recurring process to update the last device status in the database
+#threading.Thread(Target=isOnline, args=(deviceDB.all().primaryIP,))
 
 # Implicit index get route - redirect to index page
 @app.route("/")

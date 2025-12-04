@@ -5,7 +5,7 @@ Network inventory and orchestration system
 Blacksmith is an inventory-centric management system for network devices. Individual devices are treated as first-class objects, allowing for flexibility with network management.
 
 ## Setup instructions
-    python -m pip install --upgrade pip flask netmiko tinydb
+    python -m pip install --upgrade pip flask netmiko tinydb ping3
     flask run --host=0.0.0.0
 
 ## To Do

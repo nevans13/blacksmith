@@ -41,9 +41,26 @@
                     <td><b>Tags</b></td>
                     <td id="deviceDetailTags"></td>
                 </tr>
+                    <td><b>Status</b></td>
+                    <td id="deviceDetailStatus"><p>&#x1F7E9; &#x1F7E5;</p></td>
+                </tr>
                 <tr>
                     <td><b>Primary IP</b></td>
                     <td id="deviceDetailPrimaryIP"></td>
+                </tr>
+                <tr>
+                    <td><b>SSH Management Port</b></td>
+                    <td id="deviceDetailConnectSSH">
+                        <span>22 -</span>
+                        <a>Connect</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>HTTPS Management Port</b></td>
+                    <td id="deviceDetailConnectHTTPS">
+                        <span>443 -</span>
+                        <a>Connect</a>
+                    </td>
                 </tr>
             </table>
             <button id="editDeviceButton" onclick="editDevice()">Edit Device</button>
