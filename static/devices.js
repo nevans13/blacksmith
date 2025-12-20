@@ -183,8 +183,39 @@ function editDevice() {
   document.getElementById("cancelEditDeviceButton").removeAttribute("hidden");
 
   // Convert the device parameters from text to a pre-filled textbox
-  
+  // Create input to edit device hostname, pre-populate with current hostname, and add input to the table cell
+  let deviceHostnameNew = document.createElement("input");
+  deviceHostnameNew.setAttribute("id", "deviceHostnameNew");
+  deviceHostnameNew.value = document.getElementById("deviceDetailHostname").innerText.toString();
+  document.getElementById("deviceDetailHostname").innerText = "";
+  document.getElementById("deviceDetailHostname").appendChild(deviceHostnameNew);
+
+  // Create multiselect to edit tags
+  let deviceTagsNew = document.createElement("select");
+  deviceTagsNew.setAttribute("id", "deviceTagsNew");
+  deviceTagsNew.setAttribute("name", "deviceTagsNew");
+  deviceTagsNew.setAttribute("multiple", "");
+  getTags().then((tags) => {
+    tags.forEach(element => {
+      let devicesTagOption = document.createElement("option");
+      devicesTagOption.setAttribute("value", element.toString().trim());
+      devicesTagOption.innerText = element.toString().trim();
+      document.getElementById("deviceTagsNew").appendChild(devicesTagOption);
+    });
+  });
+  document.getElementById("deviceDetailTags").innerText = "";
+  document.getElementById("deviceDetailTags").appendChild(deviceTagsNew);
+
+  // Create input to edit device primary IP, pre-populate with current primary IP, and add input to the table cell
+  let devicePrimaryIPNew = document.createElement("input");
+  devicePrimaryIPNew.setAttribute("id", "devicePrimaryIPNew");
+  devicePrimaryIPNew.value = document.getElementById("deviceDetailPrimaryIP").innerText.toString();
+  document.getElementById("deviceDetailPrimaryIP").innerText = "";
+  document.getElementById("deviceDetailPrimaryIP").appendChild(devicePrimaryIPNew);
 }
+
+// Save the device edits
+function saveNewDevice() {}
 
 // Cancel editing an existing device
 function cancelEditDevice() {
@@ -193,8 +224,10 @@ function cancelEditDevice() {
   document.getElementById("cancelEditDeviceButton").setAttribute("hidden", "");
   document.getElementById("editDeviceButton").removeAttribute("hidden");
 
-  // Delete input row
-  document.getElementById("newDeviceRow").remove();
+  // Delete input boxes
+  document.getElementById("deviceHostnameNew").remove();
+  document.getElementById("deviceTagsNew").remove();
+  document.getElementById("devicePrimaryIPNew").remove();
 }
 
 // Add devices to the device table
