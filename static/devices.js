@@ -51,6 +51,22 @@ async function getDevice(deviceId) {
   }
 }
 
+// Get tags in use by blacksmith
+async function getTags() {
+  var url = origin + "/api/v1/tags";
+  try {
+    const response = await fetch(url, {method: "GET"});
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
 // Create a new device
 async function createDevice(hostname="", tags="") {
   // Create URL and add query parameters
@@ -70,11 +86,17 @@ async function createDevice(hostname="", tags="") {
   }
 }
 
-// Get tags in use by blacksmith
-async function getTags() {
-  var url = origin + "/api/v1/tags";
+// Update an existing device
+async function updateDevice(deviceId, hostname="", tags="", primaryIP="") {
+  // Create URL and add query parameters
+  var url = origin + "/api/v1/devices/" + deviceId.toString().trim();
+  url = addQueryParameter(url, "hostname", hostname);
+  url = addQueryParameter(url, "tags", tags);
+  url = addQueryParameter(url, "primaryIP", primaryIP);
+
+  // Place HTTP PUT request to update device
   try {
-    const response = await fetch(url, {method: "GET"});
+    const response = await fetch(url, {method: "PUT"});
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
@@ -214,8 +236,44 @@ function editDevice() {
   document.getElementById("deviceDetailPrimaryIP").appendChild(devicePrimaryIPNew);
 }
 
-// Save the device edits
-function saveNewDevice() {}
+// Save the device edits based on the input boxes
+function saveEditDevice() {
+  // Define parameters for the device
+  let hostname = document.getElementById("deviceHostnameNew").value;
+  let tags = "";
+  let primaryIP = document.getElementById("devicePrimaryIPNew").value;
+
+  // Check if there are any tags defined before proceeding
+  if (document.getElementById("deviceTagsNew").children.length >= 1) {
+    Array.from(document.getElementById("deviceTagsNew").children).forEach(option => {
+      // Append the tag to the array if the option was selected in the multiselect
+      if (option.selected) {
+        // Add an asterisk before appending if the string has entries
+        if (tags.length >= 2) {tags += "*"}
+        tags += option.value.toString().trim();
+      }
+    });
+  } else {
+    tags = "default";
+  }
+
+  // Get the device ID
+  // Authentication will check if the user has permission to update the given device ID, so the field cannot just be modified in DevTools
+  let deviceId = document.getElementById("deviceDetailDeviceId").innerText.toString().trim();
+
+  updateDevice(deviceId, hostname, tags, primaryIP).then(() => {
+    // Update buttons
+    document.getElementById("saveNewDeviceButton").setAttribute("hidden", "");
+    document.getElementById("cancelNewDeviceButton").setAttribute("hidden", "");
+    document.getElementById("createNewDeviceButton").removeAttribute("hidden");
+
+    // Delete input row
+    document.getElementById("newDeviceRow").remove();
+
+    // Reload the page
+    window.location.reload();
+  });
+}
 
 // Cancel editing an existing device
 function cancelEditDevice() {
@@ -235,6 +293,7 @@ getDevices().then((value) => {
   // Hide the device table if there are no devices
   if (value.length === 0) {
     document.getElementById("deviceTable").setAttribute("hidden", "");
+    return;
   }
 
   // Build the table row
@@ -252,14 +311,14 @@ getDevices().then((value) => {
     devicesTagsColumn.appendChild(devicesTags);
     
     // Create the link to manage the individual device
-    // The device hostname link also has the unique ID of the device in the database
+    // The device hostname link in the main device table also has the unique ID of the device in the database
     devicesHostnameLink.setAttribute("id", element.id.toString().trim());
     devicesHostnameLink.setAttribute("href", "#");
     devicesHostnameLink.addEventListener("click", (event) => {
-      
       // Get the device details
       getDevice(event.target.id.toString().trim()).then((deviceValue) => {
         // Add content to the device detail table
+        document.getElementById("deviceDetailDeviceId").innerText = element.id.toString().trim();
         document.getElementById("deviceDetailHostname").innerText = deviceValue[0].hostname.toString().trim();
         document.getElementById("deviceDetailTags").innerText = deviceValue[0].tags.join(", ").toString().trim();
       });

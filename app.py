@@ -14,6 +14,7 @@ settingsDB = TinyDB("settingsDB.json")
 deviceDB = TinyDB("deviceDB.json")
 
 # Create Flask app
+# Static content is served automatically from "static" directory
 app = Flask(__name__)
 
 # Create a recurring process to update the last device status in the database
@@ -27,33 +28,57 @@ def index(): return redirect(url_for("static", filename="index.html"))
 @app.route("/favicon.ico")
 def favicon(): return send_from_directory(os.path.join(app.root_path, "static"), "favicon.ico", mimetype="image/vnd.microsoft.icon")
 
-# Route for device list
-@app.route("/api/v1/devices", methods=["GET"])
-def listDevices():
-    try:
-        return deviceDB.all(), 200
-    except:
-        return "ERROR", 500
+# Route for listing all devices or creating a device
+@app.route("/api/v1/devices", methods=["GET", "POST"])
+def devices():
+    # Get all devices
+    if request.method == "GET":
+        try:
+            return deviceDB.all(), 200
+        except:
+            return "ERROR", 500
 
-# Route to get a single device
-@app.route("/api/v1/devices/<string:deviceId>", methods=["GET"])
-def getDevice(deviceId):
-    try:
-        deviceQuery = Query()
-        return deviceDB.search(deviceQuery.id == deviceId), 200
-    except:
-        return "ERROR", 500
+   # Create a device 
+    elif request.method == "POST":
+        try:
+            if not vdt(request.args.get("hostname", type=str), "hostname"): raise ValueError("Hostname is not valid")
+            if not vdt(request.args.get("tags", type=str), "tags"): raise ValueError("Tags are not valid")
+            deviceDB.insert({"id": str(uuid4()), "hostname": request.args.get("hostname", type=str), "tags": request.args.get("tags", type=str).split("*")})
+            return "CREATED", 201
+        except: 
+            return "ERROR", 500
+    
+    else:
+        return "ERROR: invalid request method", 405
 
-# Route to create a single device
-@app.route("/api/v1/devices", methods=["POST"])
-def createDevice():
-    try:
-        if not vdt(request.args.get("hostname", type=str), "hostname"): raise ValueError("Hostname is not valid")
-        if not vdt(request.args.get("tags", type=str), "tags"): raise ValueError("Tags are not valid")
-        deviceDB.insert({"id": str(uuid4()), "hostname": request.args.get("hostname", type=str), "tags": request.args.get("tags", type=str).split("*")})
-        return "CREATED", 201
-    except: 
-        return "ERROR", 500
+# Route to get or modify a single device
+@app.route("/api/v1/devices/<string:deviceId>", methods=["GET", "PUT"])
+def device(deviceId):
+    if request.method == "GET":
+        try:
+            deviceQuery = Query()
+            return deviceDB.search(deviceQuery.id == deviceId), 200
+        except:
+            return "ERROR", 500
+    
+    elif request.method == "PUT":
+        try:
+            # Check if the record exists
+            deviceQuery = Query()
+            queryResult = deviceDB.search(deviceQuery.id == deviceId)
+            if len(queryResult) < 1: return "ERROR: device with ID " + deviceId + " not found" , 404
+            elif len(queryResult) > 1: return "ERROR: more than one device with ID " + deviceId + " found" , 400
+            else:
+                # Update device properties
+                deviceDB.update({"hostname": request.args.get("hostname", type=str)}, deviceQuery.id==deviceId)
+                deviceDB.update({"tags": request.args.get("tags", type=str).split("*")}, deviceQuery.id==deviceId)
+                deviceDB.update({"primaryIP": request.args.get("primaryIP", type=str)}, deviceQuery.id==deviceId)
+                return "UPDATED", 200
+        except:
+            return "ERROR: unexpected error with device update", 500
+    
+    else:
+        return "ERROR: invalid request method", 405
 
 # Route to get tags in use by blacksmith
 @app.route("/api/v1/tags", methods=["GET"])
