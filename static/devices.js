@@ -90,9 +90,9 @@ async function createDevice(hostname="", tags="") {
 async function updateDevice(deviceId, hostname="", tags="", primaryIP="") {
   // Create URL and add query parameters
   var url = origin + "/api/v1/devices/" + deviceId.toString().trim();
-  url = addQueryParameter(url, "hostname", hostname);
-  url = addQueryParameter(url, "tags", tags);
-  url = addQueryParameter(url, "primaryIP", primaryIP);
+  if (hostname != "") {url = addQueryParameter(url, "hostname", hostname);}
+  if (tags != "") {url = addQueryParameter(url, "tags", tags);}
+  if (primaryIP != "") {url = addQueryParameter(url, "primaryIP", primaryIP);}
 
   // Place HTTP PUT request to update device
   try {
@@ -101,8 +101,7 @@ async function updateDevice(deviceId, hostname="", tags="", primaryIP="") {
       throw new Error(`Response status: ${response.status}`);
     }
 
-    const result = await response.json();
-    return result;
+    return;
   } catch (error) {
     console.error(error.message);
   }
@@ -260,18 +259,14 @@ function saveEditDevice() {
   // Get the device ID
   // Authentication will check if the user has permission to update the given device ID, so the field cannot just be modified in DevTools
   let deviceId = document.getElementById("deviceDetailDeviceId").innerText.toString().trim();
-
   updateDevice(deviceId, hostname, tags, primaryIP).then(() => {
     // Update buttons
-    document.getElementById("saveNewDeviceButton").setAttribute("hidden", "");
-    document.getElementById("cancelNewDeviceButton").setAttribute("hidden", "");
-    document.getElementById("createNewDeviceButton").removeAttribute("hidden");
+    document.getElementById("saveEditDeviceButton").setAttribute("hidden", "");
+    document.getElementById("cancelEditDeviceButton").setAttribute("hidden", "");
+    document.getElementById("editDeviceButton").removeAttribute("hidden");
 
-    // Delete input row
-    document.getElementById("newDeviceRow").remove();
-
-    // Reload the page
-    window.location.reload();
+    // Reload the view by selecting the device again to refresh details
+    document.getElementById(deviceId).click();
   });
 }
 
@@ -317,10 +312,11 @@ getDevices().then((value) => {
     devicesHostnameLink.addEventListener("click", (event) => {
       // Get the device details
       getDevice(event.target.id.toString().trim()).then((deviceValue) => {
-        // Add content to the device detail table
+        // Add content to the device detail table, first checking if optional values exist in the server response
         document.getElementById("deviceDetailDeviceId").innerText = element.id.toString().trim();
         document.getElementById("deviceDetailHostname").innerText = deviceValue[0].hostname.toString().trim();
         document.getElementById("deviceDetailTags").innerText = deviceValue[0].tags.join(", ").toString().trim();
+        if (deviceValue[0].primaryIP) {document.getElementById("deviceDetailPrimaryIP").innerText = deviceValue[0].primaryIP.toString().trim();}
       });
 
       // Update the page after hydrating the device detail table

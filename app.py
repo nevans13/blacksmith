@@ -69,10 +69,10 @@ def device(deviceId):
             if len(queryResult) < 1: return "ERROR: device with ID " + deviceId + " not found" , 404
             elif len(queryResult) > 1: return "ERROR: more than one device with ID " + deviceId + " found" , 400
             else:
-                # Update device properties
-                deviceDB.update({"hostname": request.args.get("hostname", type=str)}, deviceQuery.id==deviceId)
-                deviceDB.update({"tags": request.args.get("tags", type=str).split("*")}, deviceQuery.id==deviceId)
-                deviceDB.update({"primaryIP": request.args.get("primaryIP", type=str)}, deviceQuery.id==deviceId)
+                # Update device properties, checking if they were included in the request
+                if request.args.get("hostname", type=str): deviceDB.update({"hostname": request.args.get("hostname", type=str)}, deviceQuery.id==deviceId)
+                if request.args.get("tags", type=str): deviceDB.update({"tags": request.args.get("tags", type=str).split("*")}, deviceQuery.id==deviceId)
+                if request.args.get("primaryIP", type=str): deviceDB.update({"primaryIP": request.args.get("primaryIP", type=str)}, deviceQuery.id==deviceId)
                 return "UPDATED", 200
         except:
             return "ERROR: unexpected error with device update", 500
