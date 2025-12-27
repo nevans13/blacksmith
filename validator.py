@@ -12,6 +12,20 @@ def vdt(input, inputType):
                 if len(input) >= 100: raise ValueError("Hostname is too long")
                 return True
             
+            # Should be a valid IPv4 address
+            case "prefix":
+                if type(input) != str: raise ValueError("Prefix is invalid type")
+                if len(input) < 1: raise ValueError("Prefix is too short")
+                if len(input) >= 15: raise ValueError("Prefix is too long")
+                if len(input.split(".")) != 4: raise ValueError("Prefix does not have correct number of octets")
+                return True
+
+            case "description":
+                if type(input) != str: raise ValueError("Description is invalid type")
+                if len(input) < 1: raise ValueError("Description is too short")
+                if len(input) >= 100: raise ValueError("Description is too long")
+                return True
+            
             # Tags are included as a query parameter string, seperated by an asterisk
             case "tags":
                 if type(input) != str: raise ValueError("Tag is invalid type")

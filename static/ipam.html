@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>blacksmith - IPAM</title>
+        <link rel="stylesheet" href="styles.css" />
+        <script src="ipam.js"></script>
+    </head>
+    <body>
+        <div class="header" id="header">
+            <h1 class="header">blacksmith</h1>
+            <a class="header" href="index.html">Home</a>
+            <a class="header" href="devices.html">Devices</a>
+            <a class="header" href="ipam.html">IPAM</a>
+            <a class="header" href="settings.html">Settings</a>
+            <a class="header" href="help.html">Help</a>
+            <hr class="header" />
+        </div>
+
+        <div class="content" id="prefixTableDiv">
+            <h2>IPAM</h2>
+            <table id="prefixTable">
+                <tr>
+                    <!-- The prefix action buttons of the main IPAM table in the Actions column hold the unique prefix ID in the "id" tag of each button -->
+                    <th>Prefix</th>
+                    <th>Description</th>
+                    <th>Tags</th>
+                    <th>Actions</th>
+                </tr>
+            </table>
+            
+            <button id="createNewPrefixButton" onclick="createNewPrefix()">Create New</button>
+            <button hidden id="saveNewPrefixButton" onclick="saveNewPrefix()">Save</button>
+            <button hidden id="cancelNewPrefixButton" onclick="cancelNewPrefix()">Cancel</button>
+    </body>
+</html>

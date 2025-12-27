@@ -32,6 +32,15 @@ button {
   padding: 4px;
 }
 
+button.actionButton {
+  font-size: 100%;
+  margin-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 0px;
+}
+
 div.content {
   margin-left: 12%;
   margin-right: 12%;
