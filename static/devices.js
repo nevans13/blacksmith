@@ -289,6 +289,13 @@ function saveEditDevice() {
     document.getElementById("editDeviceButton").removeAttribute("hidden");
     document.getElementById("backToListButton").removeAttribute("hidden");
 
+    // Delete input boxes and new tag button
+    document.getElementById("deviceHostnameNew").remove();
+    document.getElementById("deviceTagsNew").remove();
+    document.getElementById("devicePrimaryIPNew").remove();
+    document.getElementById("newTagInput").remove();
+    document.getElementById("newTagButton").remove();
+
     // Reload the view by selecting the device again to refresh details
     document.getElementById(deviceId).click();
   });
