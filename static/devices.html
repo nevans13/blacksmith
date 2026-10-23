@@ -31,6 +31,7 @@
 
         <div class="content" id="deviceDetailDiv" hidden>
             <h2 id="deviceDetailHeader"></h2>
+
             <table id="deviceDetailTable">
                 <tr>
                     <td><b>Device ID</b></td>
@@ -67,7 +68,9 @@
                     </td>
                 </tr>
             </table>
+
             <button id="editDeviceButton" onclick="editDevice()">Edit Device</button>
+            <button id="backToListButton" onclick="backToList()">Back to List</button>
             <button hidden id="saveEditDeviceButton" onclick="saveEditDevice()">Save</button>
             <button hidden id="cancelEditDeviceButton" onclick="cancelEditDevice()">Cancel</button>
         </div>

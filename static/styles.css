@@ -28,12 +28,13 @@ body {
 
 button {
   font-size: 112%;
+  margin-right: 6px;
   margin-top: 8px;
   padding: 4px;
 }
 
 button.actionButton {
-  font-size: 100%;
+  font-size: 80%;
   margin-top: 0px;
   padding-bottom: 0px;
   padding-left: 4px;

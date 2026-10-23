@@ -107,6 +107,9 @@ async function updateDevice(deviceId, hostname="", tags="", primaryIP="") {
   }
 }
 
+// Return to the device list
+function backToList() {window.location.href = "devices.html";}
+
 // Create a new device by adding a row to the device table
 function createNewDevice() {
   // Show the device table if it is hidden
@@ -200,6 +203,7 @@ function cancelNewDevice() {
 function editDevice() {
   // Update buttons
   document.getElementById("editDeviceButton").setAttribute("hidden", "");
+  document.getElementById("backToListButton").setAttribute("hidden", "");
   document.getElementById("saveEditDeviceButton").removeAttribute("hidden");
   document.getElementById("cancelEditDeviceButton").removeAttribute("hidden");
 
@@ -226,6 +230,25 @@ function editDevice() {
   });
   document.getElementById("deviceDetailTags").innerText = "";
   document.getElementById("deviceDetailTags").appendChild(deviceTagsNew);
+
+  // Create input and button to add a new tag name
+  document.getElementById("deviceDetailTags").appendChild(document.createElement("br")); // add a line break
+  const newTagInput = document.createElement("input");
+  newTagInput.setAttribute("id", "newTagInput");
+  document.getElementById("deviceDetailTags").appendChild(newTagInput);
+  const newTagButton = document.createElement("button");
+  newTagButton.setAttribute("id", "newTagButton");
+  newTagButton.setAttribute("class", "actionButton");
+  newTagButton.innerText = "Add Tag";
+  newTagButton.addEventListener("click", () => {
+    // Append the new tag option to the selectable list
+    let devicesTagOption = document.createElement("option");
+    devicesTagOption.setAttribute("value", newTagInput.value.toString().trim());
+    devicesTagOption.innerText = newTagInput.value.toString().trim();
+    document.getElementById("deviceTagsNew").appendChild(devicesTagOption);
+    document.getElementById("newTagInput").value = ""; // clear the input
+  });
+  document.getElementById("deviceDetailTags").appendChild(newTagButton);
 
   // Create input to edit device primary IP, pre-populate with current primary IP, and add input to the table cell
   let devicePrimaryIPNew = document.createElement("input");
@@ -257,13 +280,14 @@ function saveEditDevice() {
   }
 
   // Get the device ID
-  // Authentication will check if the user has permission to update the given device ID, so the field cannot just be modified in DevTools
+  // Authentication checks if the user has permission to update the given device ID, and that the device ID exists, so the field cannot just be modified in DevTools
   let deviceId = document.getElementById("deviceDetailDeviceId").innerText.toString().trim();
   updateDevice(deviceId, hostname, tags, primaryIP).then(() => {
     // Update buttons
     document.getElementById("saveEditDeviceButton").setAttribute("hidden", "");
     document.getElementById("cancelEditDeviceButton").setAttribute("hidden", "");
     document.getElementById("editDeviceButton").removeAttribute("hidden");
+    document.getElementById("backToListButton").removeAttribute("hidden");
 
     // Reload the view by selecting the device again to refresh details
     document.getElementById(deviceId).click();
@@ -276,11 +300,14 @@ function cancelEditDevice() {
   document.getElementById("saveEditDeviceButton").setAttribute("hidden", "");
   document.getElementById("cancelEditDeviceButton").setAttribute("hidden", "");
   document.getElementById("editDeviceButton").removeAttribute("hidden");
+  document.getElementById("backToListButton").removeAttribute("hidden");
 
-  // Delete input boxes
+  // Delete input boxes and new tag button
   document.getElementById("deviceHostnameNew").remove();
   document.getElementById("deviceTagsNew").remove();
   document.getElementById("devicePrimaryIPNew").remove();
+  document.getElementById("newTagInput").remove();
+  document.getElementById("newTagButton").remove();
 }
 
 // Add devices to the device table
