@@ -253,7 +253,7 @@ function saveEditDevice() {
       }
     });
   } else {
-    tags = "default";
+    tags = "default"; // enforce the "default" tag if none are selected - every resource must be tagged
   }
 
   // Get the device ID

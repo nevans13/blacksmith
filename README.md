@@ -9,14 +9,15 @@ Blacksmith is an inventory-centric management system for network devices. Indivi
     flask run --host=0.0.0.0
 
 ## To Do
-[x] Add basic frontend\
-[x] Add device tagging functionality (instead of single-membership such as device group)\
-[ ] Add help page (wiki-style)\
-[ ] Add authentication layer\
-[ ] Add dark mode\
-[ ] Add feature - device inventory\
-[ ] Add feature - device comparison (properties and configuration)\
-[ ] Add feature - IPAM\
-[ ] Add feature - routing protocols\
-[ ] Add feature - opening a device in external systems (SSH, web, monitoring system, etc)\
-[ ] Add driver - Cisco IOS\
+- [x] Add basic frontend
+- [x] Add device tagging functionality (instead of single-membership such as device group)
+- [x] Add basic help page
+- [ ] Add PDF administrator's manual
+- [ ] Add authentication layer
+- [ ] Add dark mode
+- [ ] Add feature - device inventory
+- [ ] Add feature - device comparison (properties and configuration)
+- [ ] Add feature - IPAM
+- [ ] Add feature - routing protocols
+- [ ] Add feature - opening a device in external systems (SSH, web, monitoring system, etc)
+- [ ] Add driver - Cisco IOS

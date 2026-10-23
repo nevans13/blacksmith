@@ -55,6 +55,20 @@ h2 {
   padding: 8px;
 }
 
+h3 {
+  padding: 6px;
+}
+
+hr.divider {
+  background-color: black;
+  border-width: 0px;
+  height: 1px;
+  margin-bottom: 18px;
+  margin-top: 12px;
+  padding: 0px;
+  width: 100%;
+}
+
 hr.header {
   background-color: black;
   border-width: 0px;
