@@ -106,9 +106,16 @@ def prefixes():
     else:
         return "ERROR: invalid request method", 405
 
-# Route to modify a single prefix
-@app.route("/api/v1/prefixes/<string:prefixId>", methods=["PUT"])
+# Route to get or modify a single prefix
+@app.route("/api/v1/prefixes/<string:prefixId>", methods=["GET", "PUT"])
 def prefix(prefixId):
+    if request.method == "GET":
+        try:
+            prefixQuery = Query()
+            return prefixDB.search(prefixQuery.id == prefixId), 200
+        except:
+            return "ERROR", 500
+
     if request.method == "PUT":
         try:
             # Check if the record exists

@@ -35,6 +35,22 @@ async function getPrefixes() {
   }
 }
 
+// Get a single IPAM prefix
+async function getPrefix(prefixId) {
+  const url = origin + "/api/v1/prefixes/" + prefixId.toString().trim();
+  try {
+    const response = await fetch(url, {method: "GET"});
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
 // Get tags in use by blacksmith
 async function getTags() {
   var url = origin + "/api/v1/tags";
@@ -224,7 +240,48 @@ getPrefixes().then((value) => {
     prefixEdit.setAttribute("id", element.id.toString().trim());
     prefixEdit.setAttribute("href", "#");
     prefixEdit.addEventListener("click", (event) => {
-      return;
+      const prefixId = event.target.id.toString().trim();
+      getPrefix(prefixId).then((prefixValue) => {
+        // IPAM entries are edited directly in the prefix table
+        // Replace the IPAM entry fields with pre-populated input boxes
+        // Replace the prefix cell
+        const prefixCell = document.getElementById(prefixId).closest("tr")?.cells[0];
+        const prefixCellInput = document.createElement("input");
+        prefixCellInput.setAttribute("id", "prefixCellInput");
+        prefixCellInput.setAttribute("data-original-value", prefixValue[0].prefix.toString().trim()); // saves the original value in case the input field is modified before clicking Cancel
+        prefixCellInput.value = prefixValue[0].prefix.toString().trim();
+        prefixCell.innerHTML = "";
+        prefixCell.appendChild(prefixCellInput);
+
+        // Replace the description cell
+        const prefixDescriptionCell = document.getElementById(prefixId).closest("tr")?.cells[1];
+        const prefixDescriptionCellInput = document.createElement("input");
+        prefixDescriptionCellInput.setAttribute("id", "prefixDescriptionCellInput");
+        prefixDescriptionCellInput.setAttribute("data-original-value", prefixValue[0].description.toString().trim()); // saves the original value in case the input field is modified before clicking Cancel
+        prefixDescriptionCellInput.value = prefixValue[0].description.toString().trim();
+        prefixDescriptionCell.innerHTML = "";
+        prefixDescriptionCell.appendChild(prefixDescriptionCellInput);
+
+        // Replace the Edit button with Save and Cancel buttons
+        document.getElementById(prefixId).setAttribute("hidden", "");
+        const prefixActionsCell = document.getElementById(prefixId).closest("tr")?.cells[3];
+        const prefixActionsSaveButton = document.createElement("button");
+        prefixActionsSaveButton.setAttribute("class", "actionButton");
+        prefixActionsSaveButton.innerText = "Save";
+        prefixActionsSaveButton.addEventListener("click", () => {});
+        const prefixActionsCancelButton = document.createElement("button");
+        prefixActionsCancelButton.setAttribute("class", "actionButton");
+        prefixActionsCancelButton.innerText = "Cancel";
+        prefixActionsCancelButton.addEventListener("click", () => { // restore the Edit button and delete the Save/Cancel buttons
+          prefixCell.innerText = prefixCellInput.getAttribute("data-original-value");
+          prefixDescriptionCell.innerText = prefixDescriptionCellInput.getAttribute("data-original-value");
+          prefixActionsSaveButton.remove();
+          prefixActionsCancelButton.remove();
+          document.getElementById(prefixId).removeAttribute("hidden");
+        });
+        prefixActionsCell.appendChild(prefixActionsSaveButton);
+        prefixActionsCell.appendChild(prefixActionsCancelButton);
+      });
     });
 
     // Add the table row to the table
